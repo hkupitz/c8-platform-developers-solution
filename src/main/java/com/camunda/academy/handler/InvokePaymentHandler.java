@@ -24,11 +24,11 @@ public class InvokePaymentHandler implements JobHandler {
 
 		zeebeClient.newPublishMessageCommand()
 			.messageName("paymentRequestMessage")
-			.correlationKey("orderId")
+			.correlationKey("")
 			.variables(variables)
 			.send().join();
 
 		// Complete the Job
-		client.newCompleteCommand(job.getKey()).variable("orderId",orderId).send().join();
+		client.newCompleteCommand(job.getKey()).variable("orderId", orderId).send().join();
 	}
 }
