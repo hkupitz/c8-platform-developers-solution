@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Web Modeler" exporterVersion="4a485f2" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="44f5ead0-8796-4d91-9cf8-66bca6ae786f">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.17.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0" camunda:diagramRelationId="44f5ead0-8796-4d91-9cf8-66bca6ae786f">
   <bpmn:collaboration id="Collaboration_114wqya">
     <bpmn:participant id="Participant_08t6kuh" name="Payment" processRef="PaymentProcess" />
   </bpmn:collaboration>
@@ -61,6 +61,22 @@
     <bpmn:sequenceFlow id="Flow_062taq3" sourceRef="Activity_1sqb5qi" targetRef="Gateway_09mrrg2" />
     <bpmn:sequenceFlow id="Flow_08kazbk" sourceRef="Gateway_09mrrg2" targetRef="Activity_085c0pd" />
     <bpmn:sequenceFlow id="Flow_0qq2w8c" sourceRef="Activity_085c0pd" targetRef="Event_1kmlvg6" />
+    <bpmn:boundaryEvent id="Event_0k6lhdv" name="Invalid expiry date" attachedToRef="Activity_1sqb5qi">
+      <bpmn:outgoing>Flow_0phxhvs</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1yz4ak7" errorRef="Error_0j9tb92" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0phxhvs" sourceRef="Event_0k6lhdv" targetRef="Activity_1t1ew3n" />
+    <bpmn:endEvent id="Event_08gamjr" name="Payment failed">
+      <bpmn:incoming>Flow_1ve41go</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="Activity_1t1ew3n" name="Fail payment">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="payment-completion" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0phxhvs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ve41go</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_1ve41go" sourceRef="Activity_1t1ew3n" targetRef="Event_08gamjr" />
   </bpmn:process>
   <bpmn:message id="Message_2qas2vq" name="paymentRequestMessage" />
   <bpmn:message id="Message_1ld9vlv" name="paymentCompletionMessage">
@@ -68,10 +84,11 @@
       <zeebe:subscription correlationKey="=orderId" />
     </bpmn:extensionElements>
   </bpmn:message>
+  <bpmn:error id="Error_0j9tb92" name="Charging failed" errorCode="creditCardChargeError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_114wqya">
       <bpmndi:BPMNShape id="Participant_08t6kuh_di" bpmnElement="Participant_08t6kuh" isHorizontal="true">
-        <dc:Bounds x="159" y="80" width="1061" height="250" />
+        <dc:Bounds x="159" y="80" width="1061" height="360" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_09nk4dv_di" bpmnElement="Activity_1iv8f8n">
@@ -106,6 +123,22 @@
         <dc:Bounds x="1152" y="122" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1146" y="165" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08gamjr_di" bpmnElement="Event_08gamjr">
+        <dc:Bounds x="1152" y="362" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1134" y="405" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_10dg9v8" bpmnElement="Activity_1t1ew3n">
+        <dc:Bounds x="990" y="340" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03e525h_di" bpmnElement="Event_0k6lhdv">
+        <dc:Bounds x="752" y="274" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="785" y="317" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1lw7aj8_di" bpmnElement="Flow_1lw7aj8">
@@ -147,6 +180,15 @@
       <bpmndi:BPMNEdge id="Flow_0qq2w8c_di" bpmnElement="Flow_0qq2w8c">
         <di:waypoint x="1090" y="140" />
         <di:waypoint x="1152" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0phxhvs_di" bpmnElement="Flow_0phxhvs">
+        <di:waypoint x="770" y="310" />
+        <di:waypoint x="770" y="380" />
+        <di:waypoint x="990" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ve41go_di" bpmnElement="Flow_1ve41go">
+        <di:waypoint x="1090" y="380" />
+        <di:waypoint x="1152" y="380" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
