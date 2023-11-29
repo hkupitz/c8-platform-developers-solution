@@ -13,9 +13,9 @@ import java.util.Scanner;
 public class PaymentApplication {
 
   // Zeebe Client Credentials
-  private static final String ZEEBE_ADDRESS = "a591c20a-a7b3-48f1-8acc-b19cf3864eca.bru-2.zeebe.camunda.io";
-  private static final String ZEEBE_CLIENT_ID = "JZmuhQfT9V0DOoxgCxMkvagyEWWeBeyG";
-  private static final String ZEEBE_CLIENT_SECRET = "GNb-Uy6Xl8RZBco4FwJuMQuFX4ztCU5ThVlk7dF06LMVuQJUCa8wjVVZSo0tbV~4";
+  private static final String ZEEBE_ADDRESS = "YOUR_ZEEBE_ADDRESS.zeebe.camunda.io";
+  private static final String ZEEBE_CLIENT_ID = "YOUR_ZEEBE_CLIENT_ID";
+  private static final String ZEEBE_CLIENT_SECRET = "YOUR_ZEEBE_CLIENT_SECRET";
   private static final String ZEEBE_AUTHORIZATION_SERVER_URL = "https://login.cloud.camunda.io/oauth/token";
   private static final String ZEEBE_TOKEN_AUDIENCE = "zeebe.camunda.io";
 

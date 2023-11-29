@@ -2,6 +2,7 @@ package com.camunda.academy.handler;
 
 import com.camunda.academy.services.CreditCardService;
 import com.camunda.academy.services.CustomerService;
+import com.camunda.academy.services.exceptions.InvalidExpiryDateException;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
@@ -21,9 +22,12 @@ public class CreditCardChargingHandler implements JobHandler {
 		var openAmount = (Double) variables.get("openAmount");
 
 		var creditCardService = new CreditCardService();
-		creditCardService.chargeAmount(cardNumber, cvc, expiryDate, openAmount);
 
-		// Complete the Job
-		client.newCompleteCommand(job.getKey()).send().join();
+		try {
+			creditCardService.chargeAmount(cardNumber, cvc, expiryDate, openAmount);
+			client.newCompleteCommand(job.getKey()).send().join();
+		} catch (InvalidExpiryDateException e) {
+			client.newFailCommand(job.getKey()).retries(0).errorMessage(e.getMessage()).send().join();
+		}
 	}
 }
