@@ -27,11 +27,15 @@ public class CreditCardChargingHandler implements JobHandler {
 			creditCardService.chargeAmount(cardNumber, cvc, expiryDate, openAmount);
 			client.newCompleteCommand(job.getKey()).send().join();
 		} catch (InvalidExpiryDateException e) {
+			System.out.println(e.getMessage());
+
 			client.newThrowErrorCommand(job.getKey())
 				.errorCode("creditCardChargeError")
 				.errorMessage(e.getMessage())
 				.send().join();
 		} catch (Exception e) {
+			e.printStackTrace();
+
 			client.newFailCommand(job.getKey())
 				.retries(0)
 				.errorMessage(e.getMessage())
